@@ -8,16 +8,18 @@ stores encrypted data in standard OpenPGP format, though similar
 plugins use custom data format.  Using the standard format allows you
 to easily migrate from some crypto algorithm to another.
 
-== Example
+== Usage
 
 acts_as_encrypted_with_gpgme can encrypt data with either a public-key
 cipher or a symmetric cipher.
 
 === Using a public-key cipher
 
-If you choose to use public-key cipher algorithm, you need to prepare
-at least a key for encryption; the key will be loaded from
-<tt>RAILS_ROOT/config/gpgme</tt>.  To generate a new key, do:
+To use public-key cipher algorithm, you need to prepare at least a key
+for encryption; the key will be loaded from
+<tt>RAILS_ROOT/config/gpgme</tt>.
+
+To generate a new key, do:
 
  $ mkdir -p config/gpgme
  $ gpg --homedir config/gpgme --gen-key
