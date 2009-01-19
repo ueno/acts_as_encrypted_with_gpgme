@@ -38,7 +38,7 @@ Now let's go ahead to create a model.
  $ ./script/generate model account name:string credit_card_number:string
  $ rake db:migrate
 
- Create app/models/account.rb containing the following:
+Create app/models/account.rb containing the following:
 
  class Account < ActiveRecord::Base
    acts_as_encrypted_with_gpgme :fields => {
