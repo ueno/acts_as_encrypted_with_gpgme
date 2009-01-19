@@ -1,0 +1,91 @@
+== ActsAsEncryptedWithGpgme
+
+acts_as_encrypted_with_gpgme is a rails plugin which does
+encryption/decryption of columns with the GPGME (GnuPG Made Easy)
+library.
+
+The main advantage acts_as_encrypted_with_gpgme offers is that it
+stores encrypted data in standard OpenPGP format, though similar
+plugins use custom data format.
+
+Using the standard format allows you to easily migrate from some
+crypto algorithm to another.
+
+== Example
+
+acts_as_encrypted_with_gpgme can encrypt data with either a public-key
+cipher or a symmetric cipher.
+
+=== Using a public-key cipher
+
+If you choose public-key cipher algorithm, you need to generate keys
+for encryption; the keys are loaded from
+<tt>RAILS_ROOT/config/gpgme</tt>.
+
+ $ mkdir -p config/gpgme
+ $ gpg --homedir config/gpgme --gen-key
+ ...follow the procedure prompted by gpg...
+ $ ./script/generate model account name:string credit_card_number:string
+ $ rake db:migrate
+
+ Create app/models/post.rb containing the following:
+
+ class Account < ActiveRecord::Base
+   acts_as_encrypted_with_gpgme :fields => {
+     :credit_card_number => {
+       :recipients => ['AC5C76C1'] # key ID for the key generated above
+     }
+   }
+ end
+
+This means that the column named <i>credit_card_number</i> will be
+encrypted for a public-key identified by 'AC5C76C1'.  This example
+only does encryption.  In other words, the column credit_card_number
+is regarded as write-only within your Rails application.
+
+To decrypt the column when retrieving the data from the database, you
+have to specify decryption key with the <tt>:key</tt> option:
+
+ class Account < ActiveRecord::Base
+   acts_as_encrypted_with_gpgme :fields => {
+     :credit_card_number => {
+       :recipients => ['AC5C76C1'] # key ID for the key generated above
+       :key => 'AC5C76C1'
+     }
+   }
+ end
+
+also, tell the passphrase to unlock the key; add the following
+to <tt>config/initializers/gpgme.rb</tt>:
+
+ ActsAsEncryptedWithGpgme.set_passphrase('AC5C76C1', 'your passphrase')
+
+=== Using a symmetric cipher
+
+Symmetric encryption can be used in the same way as public-key
+encryption described above, except that you don't need to generate
+keys beforehand.
+
+ $ ./script/generate model account name:string credit_card_number:string
+ $ rake db:migrate
+
+ Create app/models/post.rb containing the following:
+
+ class Account < ActiveRecord::Base
+   acts_as_encrypted_with_gpgme :fields => [:credit_card_number]
+ end
+
+To tell the passphrase, add the following to
+<tt>config/initializers/gpgme.rb</tt>:
+
+ ActsAsEncryptedWithGpgme.set_passphrase('Account#credit_card_number',
+                                         'your passphrase')
+
+== Security consideration
+
+It is generally not a good idea to hold a secret in memory for a long
+time.  If you really want to support on-the-fly decryption, you should
+probably consider hosting your Rails application on a trusted machine
+isolated from the database server.
+
+Copyright (c) 2009 Daiki Ueno, released under the MIT license
