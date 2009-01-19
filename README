@@ -25,6 +25,14 @@ for encryption; the keys are loaded from
  $ mkdir -p config/gpgme
  $ gpg --homedir config/gpgme --gen-key
  ...follow the procedure prompted by gpg...
+
+If you want to select a cipher algorithm to use, create
+<tt>RAILS_ROOT/config/gpgme/gpg.conf</tt> and add the following line:
+
+ cipher-algo TWOFISH
+
+Then, let's go ahead to create a model.
+
  $ ./script/generate model account name:string credit_card_number:string
  $ rake db:migrate
 
@@ -38,8 +46,8 @@ for encryption; the keys are loaded from
    }
  end
 
-This means that the column named <i>credit_card_number</i> will be
-encrypted for a public-key identified by 'AC5C76C1'.  This example
+This code means that the column named <i>credit_card_number</i> will
+be encrypted for a public-key identified by 'AC5C76C1'.  This example
 only does encryption.  In other words, the column credit_card_number
 is regarded as write-only within your Rails application.
 
