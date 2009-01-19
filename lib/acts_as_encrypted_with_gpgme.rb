@@ -41,11 +41,11 @@ module ActsAsEncryptedWithGpgme
     # <i>options</i> is a hash whose keys are:
     #
     # - <tt>:fields</tt> Fields to be encrypted.  The value of this
-    # option will be an array or a hash.  With the latter form, you
-    # can specify options for encryption (and decryption) for each
-    # field.
+    #   option will be an array or a hash.  With the latter form, you
+    #   can specify options for encryption (and decryption) for each
+    #   field.
     # - <tt>:default_options</tt> Default options for encryption (and
-    # decryption).
+    #   decryption).
     def acts_as_encrypted_with_gpgme(options = Hash.new)
       encrypted_fields = Hash.new
       write_inheritable_attribute :encrypted_fields, encrypted_fields
@@ -84,7 +84,7 @@ module ActsAsEncryptedWithGpgme
   end
 
   module InstanceMethods
-    def encrypt
+    def encrypt                 # :nodoc:
       encrypted_fields.each do |field, field_options|
         next unless self[field]
         self[field] = GPGME::encrypt(field_options[:recipients],
@@ -93,7 +93,7 @@ module ActsAsEncryptedWithGpgme
       end
     end
 
-    def decrypt
+    def decrypt                 # :nodoc:
       encrypted_fields.each do |field, field_options|
         next unless self[field]
         next if field_options[:recipients] && !field_options[:key]
@@ -102,9 +102,10 @@ module ActsAsEncryptedWithGpgme
       end
     end
 
-    def after_find
+    def after_find              # :nodoc:
     end
 
+    private
     def encrypt_options_for_field(field)
       options = Hash.new
       field_options = encrypted_fields[field]
