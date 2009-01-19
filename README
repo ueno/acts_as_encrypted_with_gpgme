@@ -38,7 +38,7 @@ Now let's go ahead to create a model.
  $ ./script/generate model account name:string credit_card_number:string
  $ rake db:migrate
 
- Create app/models/post.rb containing the following:
+ Create app/models/account.rb containing the following:
 
  class Account < ActiveRecord::Base
    acts_as_encrypted_with_gpgme :fields => {
@@ -77,20 +77,19 @@ Symmetric encryption can be used in the same way as public-key
 encryption described in the previous section, except that you don't
 need to prepare keys.  Let's start from creating models:
 
- $ ./script/generate model account name:string credit_card_number:string
+ $ ./script/generate model post title:string body:text
  $ rake db:migrate
 
 Create app/models/post.rb containing the following:
 
- class Account < ActiveRecord::Base
-   acts_as_encrypted_with_gpgme :fields => [:credit_card_number]
+ class Post < ActiveRecord::Base
+   acts_as_encrypted_with_gpgme :fields => [:body]
  end
 
 To tell the passphrase, add the following to
 <tt>config/initializers/gpgme.rb</tt>:
 
- ActsAsEncryptedWithGpgme.set_passphrase('Account#credit_card_number',
-                                         'your passphrase')
+ ActsAsEncryptedWithGpgme.set_passphrase('Post#body', 'your passphrase')
 
 By default, the key for the passphrase is automatically constructed
 from the class and the column name to be encrypted.
