@@ -21,19 +21,20 @@ for encryption; the key will be loaded from
 
 To generate a new key, do:
 
- $ mkdir -p config/gpgme
+ $ mkdir config/gpgme
  $ gpg --homedir config/gpgme --gen-key
- ...follow the procedure prompted by gpg...
+ ...follow the instruction prompted by gpg...
 
-Optionally, you can control detail behavior of encryption through
-<tt>RAILS_ROOT/config/gpgme/gpg.conf</tt>.  For example, if you want
-to select a cipher algorithm, add the following line to that file:
+Now you have a key.  Optionally, you can control detail behavior of
+encryption through <tt>RAILS_ROOT/config/gpgme/gpg.conf</tt>.  For
+example, if you want to select a cipher algorithm, add the following
+line to that file:
 
  cipher-algo TWOFISH
 
-See <tt>man gpg</tt> for more detail.
+See <tt>man gpg</tt> for more details.
 
-Now let's go ahead to create a model.
+Let's go ahead to create a model.
 
  $ ./script/generate model account name:string credit_card_number:string
  $ rake db:migrate
