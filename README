@@ -3,38 +3,38 @@
 acts_as_encrypted_with_gpgme is a rails plugin which does
 encryption/decryption with the GPGME (GnuPG Made Easy) library.
 
-The main advantage acts_as_encrypted_with_gpgme offers is that it
-stores encrypted data in standard OpenPGP format, though similar
-plugins use custom data format.  Using the standard format allows you
-to easily migrate from some crypto algorithm to another.
+The main advantage of this plugin is that it stores encrypted data in
+the standard OpenPGP format, while similar plugins use custom data
+format.  Using the standard format allows you to easily migrate from
+some crypto algorithm to the other algorithms.
 
 == Usage
 
-acts_as_encrypted_with_gpgme can encrypt data with either a public-key
-cipher or a symmetric cipher.
+acts_as_encrypted_with_gpgme is capable of encrypting data with either
+a public-key cipher or a symmetric cipher.
 
 === Using a public-key cipher
 
-To use public-key cipher algorithm, you need to prepare at least a key
-for encryption; the key will be loaded from
+To use public-key cipher algorithm, you need a key pair for
+encryption; the keys are loaded from
 <tt>RAILS_ROOT/config/gpgme</tt>.
 
-To generate a new key, do:
+To generate a new key pair, do:
 
  $ mkdir config/gpgme
  $ gpg --homedir config/gpgme --gen-key
  ...follow the instruction prompted by gpg...
 
-Now you have a key.  Optionally, you can control detail behavior of
+Now you have a key pair.  You might want to control detail behavior of
 encryption through <tt>RAILS_ROOT/config/gpgme/gpg.conf</tt>.  For
-example, if you want to select a cipher algorithm, add the following
-line to that file:
+example, to specify a cipher algorithm being used internally, add the
+following line to the file:
 
  cipher-algo TWOFISH
 
-See <tt>man gpg</tt> for more details.
+For other options, see <tt>man gpg</tt>.
 
-Let's go ahead to create a model.
+Now let's go ahead to create an ActiveRecord model.
 
  $ ./script/generate model account name:string credit_card_number:string
  $ rake db:migrate
@@ -50,13 +50,13 @@ Create app/models/account.rb containing the following:
  end
 
 The above code means that the column named <i>credit_card_number</i>
-be encrypted for a public-key identified by 'AC5C76C1'.  Please note
-that this example only does encryption and no decryption---in other
+be encrypted to a public-key identified by 'AC5C76C1'.  Note that at
+this point the example only does *not* provide decryption---in other
 words, the column <i>credit_card_number</i> is regarded as write-only
 within your Rails application.
 
-To decrypt the column when retrieving the data from the database, you
-may want to specify decryption key with the <tt>:key</tt> option:
+To make the column be decrypted after the data is retrieved from the
+database, specify decryption key with the <tt>:key</tt> option:
 
  class Account < ActiveRecord::Base
    acts_as_encrypted_with_gpgme :fields => {
@@ -67,7 +67,7 @@ may want to specify decryption key with the <tt>:key</tt> option:
    }
  end
 
-and tell the passphrase to unlock the key; add the following to
+and provide the passphrase to unlock the key; add the following to
 <tt>config/initializers/gpgme.rb</tt>:
 
  ActsAsEncryptedWithGpgme.set_passphrase('AC5C76C1', 'your passphrase')
