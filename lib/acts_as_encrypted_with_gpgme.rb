@@ -86,7 +86,7 @@ module ActsAsEncryptedWithGpgme
   module InstanceMethods
     def encrypt                 # :nodoc:
       encrypted_fields.each do |field, field_options|
-        next unless self[field]
+        next unless self[field] && changed.include?(field.to_s)
         self[field] = GPGME::encrypt(field_options[:recipients],
                                      self[field],
                                      encrypt_options_for_field(field))

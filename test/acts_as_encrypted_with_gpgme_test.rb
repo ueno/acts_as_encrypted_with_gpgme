@@ -63,13 +63,20 @@ class ActsAsEncryptedWithGpgmeTest < ActiveSupport::TestCase
 
   test "symkey encryption" do
     r = SymkeyTestRecord.create(:encrypted_field => "aaa")
-    r = SymkeyTestRecord.find(r.id)
+    r.reload
     assert_equal(r.encrypted_field, "aaa")
   end
 
   test "pubkey encryption" do
     r = PubkeyTestRecord.create(:encrypted_field => "aaa")
-    r = PubkeyTestRecord.find(r.id)
+    r.reload
+    assert_equal(r.encrypted_field, "aaa")
+  end
+  
+  test "idempotence" do
+    r = PubkeyTestRecord.create(:encrypted_field => "aaa")
+    r.save
+    r.reload
     assert_equal(r.encrypted_field, "aaa")
   end
 end
