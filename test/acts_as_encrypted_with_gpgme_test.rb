@@ -48,6 +48,7 @@ class ActsAsEncryptedWithGpgmeTest < ActiveSupport::TestCase
   def setup
     setup_db
     ENV.delete('GPG_AGENT_INFO')
+    GPGME::check_version("1.1.5")
     homedir = File.dirname(__FILE__) + '/gpgme'
     GPGME::set_engine_info(GPGME::PROTOCOL_OpenPGP, nil, homedir)
     ActsAsEncryptedWithGpgme.set_passphrase('SymkeyTestRecord#encrypted_field',

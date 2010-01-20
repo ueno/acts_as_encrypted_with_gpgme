@@ -1,3 +1,4 @@
+GPGME::check_version("1.1.5")
 GPGME::engine_check_version(GPGME::PROTOCOL_OpenPGP)
 
 homedir = File.dirname(__FILE__) + '/../gpgme'
