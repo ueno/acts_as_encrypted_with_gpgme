@@ -2,7 +2,7 @@ GPGME::check_version("1.1.5")
 GPGME::engine_check_version(GPGME::PROTOCOL_OpenPGP)
 
 homedir = File.dirname(__FILE__) + '/../gpgme'
-config.mkdir unless File.exist? homedir
+Dir.mkdir(homedir) unless File.exist? homedir
 GPGME::set_engine_info(GPGME::PROTOCOL_OpenPGP, nil, homedir)
 
 # ENV.delete('GPG_AGENT_INFO')    # disable gpg-agent
